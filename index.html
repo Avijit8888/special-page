@@ -3,639 +3,586 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>for you</title>
+<title>something just for you 🌸</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,300;0,400;1,300;1,400&family=Karla:wght@200;300;400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet"/>
 
 <style>
-/* ════════════════════════════════════════
-   DESIGN TOKENS — ink & moonlight
-════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
 :root {
-  --ink:        #0d0a08;
-  --ink-mid:    #1c1712;
-  --ink-soft:   #2e2520;
-  --paper:      #f7f2ea;
-  --paper-dark: #ede6d8;
-  --amber:      #c8924a;
-  --amber-pale: #e8c88a;
-  --amber-glow: rgba(200,146,74,0.18);
-  --cream:      #f0e8d4;
-  --dust:       #b8a898;
-  --whisper:    #8a7868;
-  --fog:        rgba(15,12,8,0.55);
-  --glow:       rgba(200,146,74,0.35);
-
-  --ease-silk:  cubic-bezier(0.25,0.46,0.45,0.94);
-  --ease-bloom: cubic-bezier(0.34,1.56,0.64,1);
-  --ease-pour:  cubic-bezier(0.22,1,0.36,1);
+  --rose:        #d4708a;
+  --rose-deep:   #b8506e;
+  --rose-light:  #f0a0b8;
+  --blush:       #f5c8d8;
+  --petal:       #fdeef3;
+  --warm:        #fffbf8;
+  --peach:       #fde8d6;
+  --gold:        #d4a060;
+  --gold-light:  #f0c888;
+  --sage:        #c8ddd0;
+  --lavender:    #ddd0f0;
+  --text:        #2a1a22;
+  --text-mid:    #6a3a50;
+  --text-soft:   #a07080;
+  --muted:       #c8a0b0;
+  --border:      rgba(212,112,138,0.18);
+  --glow-rose:   rgba(212,112,138,0.3);
+  --glow-gold:   rgba(212,160,96,0.25);
+  --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+  --ease-out:    cubic-bezier(0.22,1,0.36,1);
+  --ease-in:     cubic-bezier(0.4,0,1,1);
 }
 
-/* ════════════════════════════════════════
-   BASE RESET
-════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
+html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
-  font-family: 'Karla', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 300;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--warm);
+  color: var(--text);
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   cursor: none;
 }
 
-/* ════════════════════════════════════════
+/* ═══════════════════════════════════════════
    CUSTOM CURSOR
-════════════════════════════════════════ */
-#cursor {
+═══════════════════════════════════════════ */
+#cur {
   position: fixed; z-index: 9999;
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--amber);
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--rose);
   pointer-events: none;
   transform: translate(-50%,-50%);
-  transition: width 0.25s var(--ease-bloom), height 0.25s var(--ease-bloom), opacity 0.3s;
-  mix-blend-mode: screen;
+  transition: transform 0.1s, width 0.3s var(--ease-spring), height 0.3s var(--ease-spring);
+  mix-blend-mode: multiply;
 }
-#cursor-ring {
+#curRing {
   position: fixed; z-index: 9998;
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1px solid rgba(200,146,74,0.4);
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1.5px solid rgba(212,112,138,0.45);
   pointer-events: none;
   transform: translate(-50%,-50%);
-  transition: width 0.3s var(--ease-pour), height 0.3s var(--ease-pour), opacity 0.3s;
+  transition: transform 0.22s var(--ease-out), width 0.3s var(--ease-out), height 0.3s var(--ease-out), opacity 0.3s;
 }
-body.hover-active #cursor { width: 14px; height: 14px; }
-body.hover-active #cursor-ring { width: 44px; height: 44px; border-color: rgba(200,146,74,0.6); }
+body:hover #curRing { opacity: 1; }
 
-/* ════════════════════════════════════════
-   GRAIN OVERLAY
-════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   ANIMATED BACKGROUND
+═══════════════════════════════════════════ */
+#bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: 0.7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.5;
 }
 
-/* ════════════════════════════════════════
-   AMBIENT LIGHT — breathes behind everything
-════════════════════════════════════════ */
-#ambient {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background:
-    radial-gradient(ellipse 60% 50% at 30% 60%, rgba(200,146,74,0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 60% at 80% 30%, rgba(180,120,60,0.05) 0%, transparent 65%);
-  animation: ambientShift 12s ease-in-out infinite alternate;
-}
-@keyframes ambientShift {
-  from { opacity: 0.6; transform: scale(1); }
-  to   { opacity: 1;   transform: scale(1.05); }
-}
+#particles { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
 
-/* ════════════════════════════════════════
-   MAIN STAGE
-════════════════════════════════════════ */
-#stage {
-  position: fixed; inset: 0; z-index: 10;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: clamp(2rem, 6vw, 5rem);
-  overflow: hidden;
+/* ═══════════════════════════════════════════
+   SCREEN SYSTEM
+═══════════════════════════════════════════ */
+.screen {
+  display: none;
+  position: relative; z-index: 10;
+  min-height: 100vh; width: 100%;
+  padding: clamp(3rem,8vh,6rem) clamp(1.5rem,6vw,4rem) clamp(4rem,8vh,6rem);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
-
-/* ════════════════════════════════════════
-   MESSAGE SYSTEM
-   — core of the presence illusion
-════════════════════════════════════════ */
-#message-area {
-  width: 100%; max-width: 560px;
-  min-height: 280px;
-  display: flex; flex-direction: column;
-  align-items: flex-start; justify-content: center;
-  gap: 0;
+.screen.active {
+  display: flex;
+  animation: screenFadeIn 0.7s var(--ease-out) forwards;
 }
-
-/* Individual message lines */
-.msg-line {
-  font-family: 'Lora', serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(1.3rem, 3.5vw, 2rem);
-  line-height: 1.65;
-  color: var(--paper);
-  opacity: 0;
-  transform: translateY(12px);
-  display: block;
-  transition: opacity 0.7s var(--ease-silk), transform 0.7s var(--ease-pour);
-  letter-spacing: 0.01em;
-}
-.msg-line.visible {
-  opacity: 1; transform: translateY(0);
-}
-.msg-line.dim {
-  opacity: 0.35; font-size: 0.9em;
-}
-.msg-line .amber { color: var(--amber-pale); }
-.msg-line.small {
-  font-family: 'Karla', sans-serif;
-  font-style: normal; font-weight: 200;
-  font-size: clamp(0.78rem, 1.6vw, 0.92rem);
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--whisper);
-}
-.msg-line.signature {
-  font-family: 'Libre Baskerville', serif;
-  font-style: italic; font-weight: 400;
-  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
-  color: var(--amber-pale);
-}
-
-/* Spacer */
-.msg-space { height: clamp(0.8rem, 2.5vh, 1.6rem); display: block; }
-
-/* ════════════════════════════════════════
-   TYPING INDICATOR
-   PSYCHOLOGICAL: She is composing
-════════════════════════════════════════ */
-#typing-indicator {
-  display: flex; align-items: center; gap: 6px;
-  opacity: 0; transition: opacity 0.4s;
-  padding: 0.2rem 0;
-}
-#typing-indicator.visible { opacity: 1; }
-#typing-indicator span {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--amber);
-  animation: typePulse 1.4s ease-in-out infinite;
-}
-#typing-indicator span:nth-child(2) { animation-delay: 0.18s; background: rgba(200,146,74,0.7); }
-#typing-indicator span:nth-child(3) { animation-delay: 0.36s; background: rgba(200,146,74,0.45); }
-@keyframes typePulse {
-  0%,60%,100% { transform: scale(0.8); opacity: 0.5; }
-  30% { transform: scale(1.3); opacity: 1; }
-}
-
-/* ════════════════════════════════════════
-   INPUT AREA
-════════════════════════════════════════ */
-#input-zone {
-  width: 100%; max-width: 560px;
-  margin-top: clamp(2rem, 5vh, 3.5rem);
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 0.6s var(--ease-silk), transform 0.6s var(--ease-pour);
-}
-#input-zone.visible { opacity: 1; transform: translateY(0); }
-
-#user-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(200,146,74,0.2);
-  padding: 0.9rem 0;
-  font-family: 'Lora', serif;
-  font-style: italic;
-  font-size: clamp(1rem, 2.4vw, 1.2rem);
-  color: var(--cream);
-  outline: none;
-  caret-color: var(--amber);
-  transition: border-color 0.4s;
-  resize: none;
-  min-height: 52px;
-  line-height: 1.7;
-}
-#user-input::placeholder {
-  color: rgba(180,160,130,0.3);
-  font-style: italic;
-}
-#user-input:focus {
-  border-bottom-color: rgba(200,146,74,0.55);
-}
-
-/* Input glow line that grows on focus */
-.input-glow-line {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--amber), transparent);
-  transform: scaleX(0);
-  transition: transform 0.6s var(--ease-silk);
-  margin-top: -1px;
-}
-#user-input:focus ~ .input-glow-line { transform: scaleX(1); }
-
-/* Char counter + observation */
-.input-meta {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-top: 0.6rem;
-  min-height: 1.4em;
-}
-.input-obs {
-  font-family: 'Lora', serif; font-style: italic;
-  font-size: 0.8rem; color: var(--amber);
-  opacity: 0; transition: opacity 0.5s;
-  min-width: 1px;
-}
-.input-obs.show { opacity: 1; }
-.input-chars {
-  font-size: 0.68rem; letter-spacing: 0.1em;
-  color: var(--whisper); opacity: 0.6;
-}
-
-/* Send button — just a line */
-#send-btn {
-  margin-top: 1.8rem;
-  background: transparent; border: none;
-  display: flex; align-items: center; gap: 0.9rem;
-  cursor: none; padding: 0;
-  opacity: 0; transition: opacity 0.5s var(--ease-silk);
-}
-#send-btn.visible { opacity: 1; }
-#send-btn:hover .send-label { color: var(--amber-pale); letter-spacing: 0.28em; }
-#send-btn:hover .send-line { width: 48px; background: var(--amber); }
-.send-line {
-  height: 1px; width: 32px;
-  background: rgba(200,146,74,0.5);
-  transition: width 0.3s var(--ease-bloom), background 0.3s;
-}
-.send-label {
-  font-family: 'Karla', sans-serif; font-weight: 200;
-  font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--whisper);
-  transition: color 0.3s, letter-spacing 0.3s;
-}
-
-/* ════════════════════════════════════════
-   SKIP / CONTINUE BUTTON
-════════════════════════════════════════ */
-#continue-btn {
-  margin-top: 2.4rem;
-  background: transparent; border: none;
-  cursor: none; padding: 0;
-  display: flex; align-items: center; gap: 0.9rem;
-  opacity: 0; transition: opacity 0.6s var(--ease-silk);
-}
-#continue-btn.visible { opacity: 1; }
-#continue-btn:hover .cb-label { color: var(--amber-pale); letter-spacing: 0.24em; }
-#continue-btn:hover .cb-line { width: 42px; }
-.cb-line { height: 1px; width: 28px; background: rgba(200,146,74,0.35); transition: width 0.3s var(--ease-bloom); }
-.cb-label {
-  font-family: 'Karla', sans-serif; font-weight: 200;
-  font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--whisper); transition: color 0.3s, letter-spacing 0.3s;
-}
-
-/* ════════════════════════════════════════
-   RESPONSE CARD
-   PSYCHOLOGICAL: Glows when she speaks
-════════════════════════════════════════ */
-#response-card {
-  width: 100%; max-width: 560px;
-  margin-top: clamp(1.8rem, 4vh, 3rem);
-  padding: 1.8rem 2rem;
-  border-left: 2px solid rgba(200,146,74,0.3);
-  background: rgba(200,146,74,0.03);
-  border-radius: 0 12px 12px 0;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.7s var(--ease-silk), transform 0.7s var(--ease-pour), box-shadow 0.8s;
-  font-family: 'Lora', serif; font-style: italic;
-  font-size: clamp(0.95rem, 2.2vw, 1.1rem);
-  color: rgba(240,232,212,0.88);
-  line-height: 1.9;
-  position: relative;
-}
-#response-card.visible {
-  opacity: 1; transform: translateY(0);
-}
-#response-card.glowing {
-  border-left-color: var(--amber);
-  box-shadow: -8px 0 40px rgba(200,146,74,0.12), 0 0 60px rgba(200,146,74,0.05);
-  background: rgba(200,146,74,0.05);
-}
-#response-card::before {
-  content: '✦';
-  position: absolute; top: 1.6rem; left: -1.4rem;
-  font-size: 0.7rem; color: var(--amber);
-  background: var(--ink); padding: 0.1rem;
-  line-height: 1;
-}
-
-/* Typing cursor inside response */
-.t-cursor {
-  display: inline-block; width: 1.5px; height: 1em;
-  background: var(--amber); margin-left: 1px;
-  vertical-align: text-bottom;
-  animation: blinkCursor 0.8s step-end infinite;
-}
-@keyframes blinkCursor { 0%,100%{opacity:1} 50%{opacity:0} }
-
-/* ════════════════════════════════════════
-   MEMORY BADGE
-   PSYCHOLOGICAL: Subtle acknowledgement of returning
-════════════════════════════════════════ */
-#memory-badge {
-  position: fixed; top: 1.8rem; left: clamp(1.5rem, 5vw, 3rem);
-  z-index: 200;
-  display: flex; align-items: center; gap: 0.6rem;
-  opacity: 0; transition: opacity 1s;
-}
-#memory-badge.visible { opacity: 1; }
-.mb-dot {
-  width: 4px; height: 4px; border-radius: 50%;
-  background: var(--amber); opacity: 0.7;
-  animation: mbPulse 3s ease-in-out infinite;
-}
-@keyframes mbPulse { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:0.9;transform:scale(1.4)} }
-.mb-text {
-  font-family: 'Karla', sans-serif; font-weight: 200;
-  font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--whisper);
-}
-
-/* ════════════════════════════════════════
-   TIME CHIP
-════════════════════════════════════════ */
-#time-chip {
-  position: fixed; bottom: 2rem; right: clamp(1.5rem, 5vw, 3rem);
-  z-index: 200;
-  font-family: 'Karla', sans-serif; font-weight: 200;
-  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--whisper); opacity: 0;
-  transition: opacity 1.2s;
-}
-#time-chip.visible { opacity: 0.7; }
-
-/* ════════════════════════════════════════
-   VISIT LINE — subtle visit number reference
-════════════════════════════════════════ */
-#visit-line {
-  position: fixed; bottom: 2rem; left: clamp(1.5rem, 5vw, 3rem);
-  z-index: 200;
-  font-family: 'Lora', serif; font-style: italic;
-  font-size: 0.62rem; color: var(--whisper); opacity: 0;
-  transition: opacity 1.2s;
-}
-#visit-line.visible { opacity: 0.5; }
-
-/* ════════════════════════════════════════
-   OVERLAY TRANSITIONS
-════════════════════════════════════════ */
-#curtain {
-  position: fixed; inset: 0; z-index: 900;
-  background: var(--ink);
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.55s var(--ease-silk);
-}
-#curtain.closed { opacity: 1; pointer-events: all; }
-
-/* ════════════════════════════════════════
-   FINAL STATE — last screen
-════════════════════════════════════════ */
-#final-state {
-  width: 100%; max-width: 560px;
-  display: none; flex-direction: column;
-  align-items: flex-start; gap: 0;
-}
-#final-state.active { display: flex; }
-
-/* ════════════════════════════════════════
-   REPLAY ROW
-════════════════════════════════════════ */
-#replay-row {
-  display: flex; align-items: center; gap: 2rem;
-  margin-top: 3rem; flex-wrap: wrap;
-  opacity: 0; transition: opacity 0.6s var(--ease-silk);
-}
-#replay-row.visible { opacity: 1; }
-
-.ghost-btn {
-  background: transparent; border: none; cursor: none; padding: 0;
-  display: flex; align-items: center; gap: 0.7rem;
-}
-.ghost-btn:hover .gb-label { color: var(--cream); letter-spacing: 0.26em; }
-.ghost-btn:hover .gb-line { width: 36px; background: var(--amber); }
-.gb-line { height: 1px; width: 24px; background: rgba(200,146,74,0.4); transition: width 0.3s var(--ease-bloom), background 0.3s; }
-.gb-label {
-  font-family: 'Karla', sans-serif; font-weight: 200;
-  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--whisper); transition: color 0.3s, letter-spacing 0.3s;
-}
-
-/* ════════════════════════════════════════
-   AMBIENT PARTICLES — ink motes
-════════════════════════════════════════ */
-#motes {
-  position: fixed; inset: 0; z-index: 3; pointer-events: none;
-}
-
-/* ════════════════════════════════════════
-   KEYFRAMES
-════════════════════════════════════════ */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
+@keyframes screenFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes fadeIn {
-  from { opacity: 0; } to { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   ═ SCREEN 0 — LANDING ═
+   PSYCHOLOGICAL: Presence Illusion + Timing
+═══════════════════════════════════════════ */
+#s0 { gap: 0; }
+
+.greeting-pill {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.42rem 1.3rem;
+  background: linear-gradient(135deg,rgba(212,112,138,0.1),rgba(212,160,96,0.1));
+  border: 1px solid rgba(212,112,138,0.28);
+  border-radius: 50px;
+  font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--rose-deep);
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: popUp 0.6s var(--ease-spring) 0.3s forwards;
 }
 
-/* ════════════════════════════════════════
-   MOBILE
-════════════════════════════════════════ */
-@media (max-width: 520px) {
-  #stage { padding: 2rem 1.6rem; justify-content: flex-start; padding-top: 20vw; }
-  .msg-line { font-size: clamp(1.15rem, 5vw, 1.5rem); }
-  #response-card { padding: 1.4rem 1.4rem; }
+.land-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.2rem,9vw,7.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0;
+  opacity: 0;
+  animation: slideUp 0.65s var(--ease-out) 0.5s forwards;
+  min-height: 2.2em;
 }
-</style>
-</head>
-<body>
-
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-<div id="ambient"></div>
-
-<!-- Grain canvas for motes -->
-<canvas id="motes"></canvas>
-
-<!-- Screen fade curtain -->
-<div id="curtain" class="closed"></div>
-
-<!-- MEMORY BADGE: subtle returning-user indicator -->
-<div id="memory-badge">
-  <div class="mb-dot"></div>
-  <span class="mb-text" id="mb-label">first visit</span>
-</div>
-
-<!-- TIME CHIP -->
-<div id="time-chip" id="time-chip"></div>
-
-<!-- VISIT LINE: vague reference to past -->
-<div id="visit-line" id="visit-line"></div>
-
-<!-- ════════════════════════════════════
-     MAIN STAGE
-═════════════════════════════════════ -->
-<div id="stage">
-
-  <!-- MESSAGE AREA: dynamically populated by JS -->
-  <div id="message-area"></div>
-
-  <!-- TYPING INDICATOR -->
-  <div id="typing-indicator">
-    <span></span><span></span><span></span>
-  </div>
-
-  <!-- INPUT ZONE -->
-  <div id="input-zone">
-    <textarea id="user-input" placeholder="say whatever comes…" maxlength="800" rows="2"></textarea>
-    <div class="input-glow-line"></div>
-    <div class="input-meta">
-      <span class="input-obs" id="input-obs"></span>
-      <span class="input-chars" id="input-chars"></span>
-    </div>
-    <button id="send-btn">
-      <div class="send-line"></div>
-      <span class="send-label">send</span>
-    </button>
-  </div>
-
-  <!-- RESPONSE CARD: her reply, typed in -->
-  <div id="response-card">
-    <div id="response-text"></div>
-  </div>
-
-  <!-- CONTINUE BUTTON -->
-  <button id="continue-btn">
-    <div class="cb-line"></div>
-    <span class="cb-label" id="cb-label">continue</span>
-  </button>
-
-  <!-- FINAL STATE -->
-  <div id="final-state">
-    <div id="final-messages"></div>
-    <div id="replay-row">
-      <button class="ghost-btn" onclick="restartExperience()">
-        <div class="gb-line"></div>
-        <span class="gb-label">begin again</span>
-      </button>
-      <button class="ghost-btn" onclick="leaveQuietly()">
-        <div class="gb-line"></div>
-        <span class="gb-label">leave quietly</span>
-      </button>
-    </div>
-  </div>
-
-</div><!-- /stage -->
-
-<script>
-/* ════════════════════════════════════════════
-   MEMORY SYSTEM
-   Uses localStorage to build a persistent
-   picture of who this person is across visits.
-   All data is vague by design — we track
-   patterns, not specifics.
-════════════════════════════════════════════ */
-
-const MEM_KEY = '_her_mem';
-
-function loadMemory() {
-  try {
-    return JSON.parse(localStorage.getItem(MEM_KEY) || '{}');
-  } catch { return {}; }
+.land-title em {
+  font-style: italic;
+  font-weight: 300;
+  background: linear-gradient(135deg, var(--rose) 20%, var(--rose-deep) 60%, #8a2040);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
 }
 
-function saveMemory(data) {
-  try {
-    localStorage.setItem(MEM_KEY, JSON.stringify(data));
-  } catch {}
+.land-ornament {
+  margin: 2.4rem auto;
+  display: flex; align-items: center; gap: 1.2rem;
+  max-width: 280px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 0.95s forwards;
+}
+.land-ornament::before, .land-ornament::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blush));
+}
+.land-ornament::after { background: linear-gradient(90deg, var(--blush), transparent); }
+.land-ornament-gem { font-size: 1.1rem; }
+
+.land-sub {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(1.1rem,2.6vw,1.4rem);
+  font-style: italic;
+  color: var(--text-soft);
+  line-height: 1.8;
+  max-width: 520px;
+  margin: 0 auto 0.8rem;
+  opacity: 0;
+  animation: slideUp 0.55s var(--ease-out) 1.1s forwards;
 }
 
-function updateMemory(patch) {
-  const mem = loadMemory();
-  const updated = { ...mem, ...patch };
-  saveMemory(updated);
-  return updated;
+/* PSYCHOLOGICAL: Time awareness — subtly shows the current time */
+.land-time {
+  font-size: 0.78rem; letter-spacing: 0.1em;
+  color: var(--muted); margin-bottom: 3.5rem;
+  opacity: 0;
+  animation: fadeIn 0.5s ease 1.3s forwards;
 }
 
-/* ─── READ EXISTING MEMORY ─── */
-const raw = loadMemory();
-
-/*
-  Memory schema:
-  {
-    visits: number,           // how many times they've opened this
-    lastVisit: timestamp,     // when they last came
-    lastDuration: seconds,    // how long they stayed last time
-    didType: bool,            // whether they typed last time
-    didComplete: bool,        // whether they saw the final screen
-    inputLength: 'none'|'short'|'long', // rough shape of what they wrote
-    didLeaveEarly: bool,      // whether they left before completing
-    sessionStart: timestamp,  // this session
-  }
-*/
-
-const now        = Date.now();
-const visits     = (raw.visits || 0) + 1;
-const lastVisit  = raw.lastVisit || null;
-const gapMs      = lastVisit ? now - lastVisit : null;
-const gapHours   = gapMs ? gapMs / (1000 * 60 * 60) : null;
-const didType    = raw.didType || false;
-const didComplete = raw.didComplete || false;
-const didLeaveEarly = raw.didLeaveEarly || false;
-const lastInputLen = raw.inputLength || 'none';
-
-// Save this session's start
-updateMemory({
-  visits,
-  lastVisit: now,
-  sessionStart: now,
-  didLeaveEarly: true,  // assume leave-early until they complete
-});
-
-/* ─── TIMELINE CLASSIFICATION ─── */
-/*
-  Based on memory, we pick an emotional timeline:
-  'first'     — first visit ever
-  'returning' — has come back after completing
-  'curious'   — returned but hadn't typed before
-  'quiet'     — left early last time
-  'remembered'— returned after long gap
-  'familiar'  — 3+ visits, feels like continuity
-*/
-function classifyTimeline() {
-  if (visits === 1) return 'first';
-  if (didLeaveEarly) return 'quiet';
-  if (gapHours !== null && gapHours > 48) return 'remembered';
-  if (visits >= 4) return 'familiar';
-  if (didComplete) return 'returning';
-  if (!didType) return 'curious';
-  return 'returning';
+/* PSYCHOLOGICAL: "She was waiting" — a small whisper above the button */
+.she-whisper {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--rose);
+  letter-spacing: 0.06em;
+  margin-bottom: 1.1rem;
+  opacity: 0;
+  animation: fadeIn 0.7s ease 1.7s forwards;
+  min-height: 1.2em;
 }
 
-const timeline = classifyTimeline();
+/* ENTER BUTTON */
+.btn-enter {
+  display: inline-flex; align-items: center; gap: 0.9rem;
+  padding: 1.15rem 3.8rem;
+  background: linear-gradient(135deg, var(--rose-light), var(--rose), var(--rose-deep));
+  color: white; border: none; border-radius: 100px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.05rem,2.5vw,1.3rem);
+  font-style: italic; font-weight: 400;
+  letter-spacing: 0.05em;
+  cursor: none;
+  position: relative; overflow: hidden;
+  box-shadow:
+    0 0 0 0 var(--glow-rose),
+    0 8px 40px rgba(184,80,110,0.38),
+    0 2px 8px rgba(184,80,110,0.2);
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease;
+  opacity: 0;
+  animation: popUp 0.65s var(--ease-spring) 1.9s forwards;
+}
+.btn-enter::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.22), transparent 60%);
+  pointer-events: none;
+}
+.btn-enter::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% -30%, rgba(255,255,255,0.4), transparent 70%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.btn-enter:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow:
+    0 0 40px var(--glow-rose),
+    0 16px 56px rgba(184,80,110,0.44),
+    0 4px 14px rgba(184,80,110,0.25);
+}
+.btn-enter:hover::after { opacity: 1; }
+.btn-enter:active { transform: scale(0.97); }
+.btn-arrow { font-size: 1rem; font-style: normal; transition: transform 0.3s var(--ease-spring); }
+.btn-enter:hover .btn-arrow { transform: translateX(5px); }
 
-/* ─── TIME OF DAY ─── */
-const hour = new Date().getHours();
-const timeOfDay = hour < 5 ? 'late' : hour < 11 ? 'morning' : hour < 17 ? 'afternoon' : hour < 21 ? 'evening' : 'night';
+/* ═══════════════════════════════════════════
+   CARD SYSTEM
+═══════════════════════════════════════════ */
+.card {
+  background: rgba(255,252,250,0.88);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1.5px solid var(--border);
+  border-radius: 36px;
+  padding: clamp(2.8rem,7vw,5rem);
+  width: 100%; max-width: 700px;
+  position: relative; overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 0 0 0.5px rgba(255,255,255,0.5),
+    0 8px 40px rgba(180,80,110,0.1),
+    0 32px 80px rgba(0,0,0,0.06);
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,112,138,0.6), rgba(212,160,96,0.4), transparent);
+}
 
-/* ════════════════════════════════════════════
-   CURSOR SYSTEM
-════════════════════════════════════════════ */
-const cur = document.getElementById('cursor');
-const curR = document.getElementById('cursor-ring');
-let mx=0, my=0, rx=0, ry=0;
+/* PSYCHOLOGICAL: Soft glow when "she speaks" — card pulse */
+.card.speaking {
+  animation: cardSpeak 1.2s ease;
+}
+@keyframes cardSpeak {
+  0%   { box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 40px rgba(180,80,110,0.1); }
+  40%  { box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 0 60px rgba(212,112,138,0.35), 0 8px 40px rgba(180,80,110,0.2); }
+  100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 40px rgba(180,80,110,0.1); }
+}
 
-document.addEventListener('mousemove', e => {
-  mx=e.clientX; my=e.clientY;
-  cur.style.left=mx+'px'; cur.style.top=my+'px';
-});
-(function animCursor(){
-  rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
-  curR.style.left=rx+'px'; curR.style.top=ry+'px';
-  requestAnimationFrame(animCursor);
-})();
+.card-chip {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.65rem; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.8rem;
+}
+.card-chip::before, .card-chip::after {
+  content: ''; width: 20px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,160,96,0.5));
+}
+.card-chip::after { background: linear-gradient(90deg, rgba(212,160,96,0.5), transparent); }
 
-document.querySelectorAll('button, textarea').forEa
+.card-h {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem,5vw,3.2rem);
+  font-weight: 300; line-height: 1.18;
+  color: var(--text); margin-bottom: 0.9rem;
+  letter-spacing: -0.01em;
+}
+.card-h em { font-style: italic; color: var(--rose-deep); }
+
+.card-sub {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.95rem,2vw,1.1rem);
+  font-style: italic; color: var(--text-soft);
+  line-height: 1.85; margin-bottom: 2.2rem;
+}
+
+/* ═══════════════════════════════════════════
+   TEXTAREA
+═══════════════════════════════════════════ */
+.ta-wrap { position: relative; }
+.ta-glow {
+  position: absolute; inset: -2px; border-radius: 20px;
+  background: linear-gradient(135deg, var(--rose-light), var(--gold-light));
+  opacity: 0; transition: opacity 0.4s; z-index: 0;
+  filter: blur(8px);
+}
+textarea:focus ~ .ta-glow, .ta-wrap:focus-within .ta-glow { opacity: 0.4; }
+
+textarea {
+  position: relative; z-index: 1;
+  width: 100%; min-height: 190px; resize: vertical;
+  background: linear-gradient(160deg, rgba(253,238,243,0.5), rgba(255,252,250,0.9));
+  border: 1.5px solid rgba(212,112,138,0.22);
+  border-radius: 18px;
+  padding: 1.5rem 1.7rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 1.12rem;
+  color: var(--text); line-height: 1.8;
+  outline: none;
+  transition: border-color 0.35s, box-shadow 0.35s, background 0.35s;
+  -webkit-appearance: none;
+}
+textarea::placeholder { color: rgba(192,128,160,0.5); }
+textarea:focus {
+  border-color: rgba(184,80,110,0.5);
+  box-shadow: 0 0 0 5px rgba(212,112,138,0.09);
+  background: rgba(255,252,250,0.98);
+}
+
+.meta-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 0.75rem; padding: 0 0.3rem;
+}
+.obs-text {
+  font-family: 'Crimson Pro', serif; font-style: italic;
+  font-size: 0.85rem; color: var(--rose);
+  min-height: 1.3em; transition: opacity 0.4s, color 0.4s;
+}
+.char-count { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.04em; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn-primary {
+  display: block; width: 100%; margin-top: 2rem;
+  padding: 1.18rem;
+  background: linear-gradient(135deg, var(--rose-light) 0%, var(--rose) 50%, var(--rose-deep) 100%);
+  color: white; border: none; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: none; position: relative; overflow: hidden;
+  box-shadow: 0 6px 30px rgba(184,80,110,0.32);
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease;
+}
+.btn-primary::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 60%);
+}
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 0 30px var(--glow-rose), 0 12px 40px rgba(184,80,110,0.42);
+}
+.btn-primary:active { transform: scale(0.98); box-shadow: 0 3px 16px rgba(184,80,110,0.28); }
+.btn-primary span { position: relative; z-index: 1; }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.8rem;
+  padding: 1.1rem 3rem;
+  background: transparent;
+  border: 1.5px solid rgba(212,112,138,0.38);
+  color: var(--rose-deep); border-radius: 100px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-style: italic;
+  cursor: none;
+  transition: all 0.3s var(--ease-spring);
+}
+.btn-secondary:hover {
+  background: rgba(212,112,138,0.08);
+  border-color: var(--rose);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(212,112,138,0.15);
+}
+
+.card-footer-quote {
+  margin-top: 2.4rem; padding-top: 2rem;
+  border-top: 1px solid rgba(212,112,138,0.1);
+  font-family: 'Crimson Pro', serif; font-style: italic;
+  font-size: 0.92rem; color: var(--muted); line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   ═ SCREEN 2 — WAIT ═
+   PSYCHOLOGICAL: Presence — "she is thinking"
+═══════════════════════════════════════════ */
+#s2 {
+  background: linear-gradient(160deg, #fff0f4 0%, #fff8f0 60%, #f8f0ff 100%);
+}
+
+/* PSYCHOLOGICAL: Typing dots — she is composing something */
+.she-typing-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+.she-typing-label {
+  font-family: 'Crimson Pro', serif; font-style: italic;
+  font-size: 1.1rem; color: var(--text-soft);
+  animation: fadeIn 0.5s ease 0.3s both;
+}
+.typing-dots {
+  display: flex; gap: 8px; align-items: center;
+  animation: fadeIn 0.4s ease 0.6s both;
+}
+.typing-dots span {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--rose);
+  animation: typingDot 1.4s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; background: var(--blush); }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; background: var(--rose-light); }
+@keyframes typingDot {
+  0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-8px); opacity: 1; }
+}
+
+.wait-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem,8vw,6rem);
+  font-weight: 300; font-style: italic;
+  line-height: 1.1; color: var(--text);
+  animation: popUp 0.5s var(--ease-spring) 0.1s both;
+}
+.wait-title em { color: var(--rose-deep); }
+
+.wait-bar-outer {
+  width: min(360px,82vw); height: 3px;
+  background: rgba(212,112,138,0.15);
+  border-radius: 3px; overflow: hidden;
+  margin: 2.8rem auto 0;
+  animation: fadeIn 0.4s ease 0.4s both;
+}
+.wait-bar-inner {
+  height: 100%; width: 0;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--rose-light), var(--rose), var(--gold), var(--rose-deep));
+  background-size: 200% 100%;
+  animation: fillBar 2.3s var(--ease-out) 0.5s forwards, shimmer 2s linear 0.5s infinite;
+}
+@keyframes fillBar { to { width: 100%; } }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+.wait-sub {
+  margin-top: 1.5rem;
+  font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--rose);
+  animation: fadeIn 0.5s ease 0.85s both;
+}
+
+/* ═══════════════════════════════════════════
+   ═ SCREEN 3 — PUZZLE ═
+═══════════════════════════════════════════ */
+.puzzle-icon {
+  font-size: 4.5rem; display: block;
+  margin-bottom: 1.5rem;
+  animation: floatIcon 5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 20px rgba(212,112,138,0.3));
+}
+@keyframes floatIcon {
+  0%,100% { transform: translateY(0) rotate(-6deg); }
+  50%      { transform: translateY(-12px) rotate(6deg); }
+}
+
+.puzzle-question {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem,3.8vw,2.3rem);
+  font-weight: 300; line-height: 1.5;
+  color: var(--text); white-space: pre-line;
+  margin-bottom: 0.6rem;
+}
+.puzzle-hint {
+  font-family: 'Crimson Pro', serif; font-style: italic;
+  font-size: 0.88rem; color: var(--rose);
+  margin-bottom: 2rem;
+}
+.puzzle-row {
+  display: flex; gap: 0.8rem; align-items: center; justify-content: center;
+  flex-wrap: wrap;
+}
+.puzzle-input {
+  padding: 1rem 1.5rem;
+  border: 1.5px solid rgba(212,112,138,0.3);
+  border-radius: 50px; font-size: 1rem;
+  color: var(--text); background: rgba(255,252,250,0.9);
+  outline: none; font-family: 'Cormorant Garamond', serif; font-style: italic;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: min(280px,100%);
+}
+.puzzle-input:focus {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 4px rgba(212,112,138,0.1);
+}
+.puzzle-btn {
+  padding: 1rem 1.8rem;
+  background: linear-gradient(135deg, var(--rose-light), var(--rose-deep));
+  color: white; border: none; border-radius: 50px;
+  font-size: 0.88rem; font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.1em; cursor: none;
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s;
+  box-shadow: 0 4px 20px rgba(184,80,110,0.3);
+}
+.puzzle-btn:hover { transform: translateY(-2px) scale(1.04); }
+
+.puzzle-feedback {
+  margin-top: 1.2rem; min-height: 1.4em;
+  font-family: 'Crimson Pro', serif; font-style: italic;
+  font-size: 1rem;
+}
+.pf-right { color: var(--gold); }
+.pf-wrong { color: var(--rose-deep); }
+
+.attempt-dots {
+  display: flex; gap: 10px; justify-content: center; margin-top: 1.2rem;
+}
+.a-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(212,112,138,0.18);
+  border: 1.5px solid rgba(212,112,138,0.3);
+  transition: background 0.3s, border-color 0.3s;
+}
+.a-dot.r { background: var(--gold); border-color: var(--gold); }
+.a-dot.w { background: var(--rose); border-color: var(--rose-deep); }
+
+/* ═══════════════════════════════════════════
+   ═ SCREEN 4 — UNLOCK REVEAL ═
+═══════════════════════════════════════════ */
+#s4 { background: linear-gradient(160deg, #fdf0f8 0%, #fff8f0 50%, #f0f8fd 100%); }
+
+.orb-container { position: relative; width: 180px; height: 180px; margin: 0 auto 2.6rem; }
+.orb-main {
+  width: 100%; height: 100%; border-radius: 50%;
+  background: conic-gradient(from 45deg, var(--rose-light), var(--blush), var(--gold-light), var(--lavender), var(--sage), var(--rose-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.8rem;
+  animation: orbRotate 10s linear infinite, orbPulse 3s ease-in-out infinite;
+  box-shadow: 0 0 60px rgba(212,112,138,0.4), 0 0 120px rgba(212,112,138,0.2);
+}
+@keyframes orbRotate { to { filter: hue-rotate(360deg); } }
+@keyframes orbPulse {
+  0%,100% { transform: scale(1); box-shadow: 0 0 60px rgba(212,112,138,0.4), 0 0 120px rgba(212,112,138,0.2); }
+  50%      { transform: scale(1.07); box-shadow: 0 0 90px rgba(212,112,138,0.6), 0 0 180px rgba(212,112,138,0.3); }
+}
+.orb-ring {
+  position: absolute; inset: -14px; border-radius: 50%;
+  border: 1px solid rgba(212,112,138,0.25);
+  animation: ringExpand 3s ease-in-out infinite;
+}
+.orb-ring2 {
+  position: absolute; inset: -28px; border-radius: 50%;
+  border: 1px solid rgba(212,112,138,0.12);
+  animation: ringExpand 3s ease-in-out 0.8s infinite;
+}
+@keyframes ringExpand {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.05); opacity: 0.6; }
+}
+
+.unlock-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem,6vw,4.2rem);
+  font-weight: 300; line-height: 1.18;
+  color: var(--text); margin-bottom: 1.1rem;
+}
+.unlock-headline strong { font-weight: 600; color: var(--rose-deep); }
+
+/* PSYCHOLOGICAL: Hidden message — direct voice from her */
+.hidden-message {
+  font-family: 'Crimson Pro', serif; font-style: italic;
+  font-size: clamp(1.02rem,2.4vw,1.22rem);
+  color: var(--text-mid); line-height: 2;
+  max-width: 520px; margin: 0 auto 3rem;
+  padding: 2rem 2.4rem;
+  background: rgba(255,255,255,0.72);
+  border-left: 3px solid var(--
