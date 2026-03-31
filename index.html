@@ -6,8 +6,104 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>something just for you 🌸</title>
 
-<link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:wght@300&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --rose:#d4708a;
+  --bg:#fffaf8;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:#2a1a22;
+}
+
+/* background */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 20%, #fdeef3, transparent),
+    radial-gradient(circle at 80% 80%, #fde8d6, transparent),
+    radial-gradient(circle at 50% 50%, #f0e8fd, transparent);
+  z-index:-1;
+}
+
+/* screens */
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:30px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.screen.active{display:flex}
+
+/* card */
+.card{
+  width:100%;
+  max-width:500px;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:26px;
+  text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,0.08);
+}
+
+/* typography */
+h1,h2{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  margin-bottom:10px;
+}
+
+p{
+  font-size:14px;
+  color:#8a5a6a;
+}
+
+/* button */
+button{
+  margin-top:20px;
+  padding:13px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#f0a0b8,#d4708a);
+  color:white;
+  font-size:15px;
+  width:100%;
+}
+
+/* textarea */
+textarea{
+  width:100%;
+  min-height:120px;
+  border-radius:14px;
+  border:none;
+  padding:14px;
+  margin-top:10px;
+  background:rgba(255,255,255,0.85);
+  font-style:italic;
+  font-size:14px;
+}
+
+/* notice */
+.notice{
+  font-size:13px;
+  color:var(--rose);
+  margin-top:8px;
+  min-height:18px;
+}
+</style>
+
 </head>
 
 <body>
@@ -27,7 +123,7 @@
 <div class="screen" id="s1">
   <div class="card">
     <h2>What's on your mind?</h2>
-    <textarea id="t1"></textarea>
+    <textarea id="t1" placeholder="write freely..."></textarea>
     <div class="notice" id="notice1"></div>
     <button id="send1Btn">Send 💌</button>
   </div>
@@ -59,7 +155,110 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+
+/* navigation */
+function go(n){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("s"+n).classList.add("active");
+}
+
+/* typing effect */
+function type(el,text){
+  el.innerHTML="";
+  let i=0;
+  function t(){
+    if(i<text.length){
+      el.innerHTML+=text[i++];
+      setTimeout(t,25);
+    }
+  }
+  t();
+}
+
+/* greeting */
+const title = document.getElementById("title");
+const time = document.getElementById("time");
+
+let h=new Date().getHours();
+let g = h<6?"You're still awake… I was waiting."
+      :h<12?"Good morning… I hoped you'd come."
+      :h<18?"You chose this moment… interesting."
+      :"Tonight feels quieter… now you're here.";
+
+type(title,g);
+
+time.innerText =
+"You opened this at "+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+/* buttons */
+const startBtn = document.getElementById("startBtn");
+const send1Btn = document.getElementById("send1Btn");
+const send2Btn = document.getElementById("send2Btn");
+
+const t1 = document.getElementById("t1");
+const t2 = document.getElementById("t2");
+const notice1 = document.getElementById("notice1");
+
+const resp1 = document.getElementById("resp1");
+const final = document.getElementById("final");
+
+/* start */
+startBtn.addEventListener("click",()=>{
+  go(1);
+});
+
+/* tracking */
+let startTime;
+let typing=false;
+
+t1.addEventListener("input",()=>{
+  if(!typing){
+    typing=true;
+    startTime=Date.now();
+  }
+
+  let len=t1.value.length;
+
+  if(len===1) notice1.innerText="you started…";
+  if(len===50) notice1.innerText="you're thinking carefully…";
+});
+
+/* send1 */
+send1Btn.addEventListener("click",()=>{
+  let txt=t1.value.trim();
+  if(!txt){alert("write something");return;}
+
+  let duration=(Date.now()-startTime)/1000;
+
+  go(2);
+
+  let r = duration>10
+    ? "You took your time… that matters."
+    : txt.length<20
+    ? "Short… but honest."
+    : "There’s something real in that.";
+
+  type(resp1,r);
+
+  setTimeout(()=>go(3),2000);
+});
+
+/* send2 */
+send2Btn.addEventListener("click",()=>{
+  let txt=t2.value.trim();
+  if(!txt){alert("say something");return;}
+
+  go(4);
+
+  let r = txt.length>60
+    ? "You don’t say things like that often… do you?"
+    : "Even that small thing… meant more than you think.";
+
+  type(final,r+" 🌸");
+});
+
+</script>
 
 </body>
 </html>
