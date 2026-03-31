@@ -1,157 +1,6 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>something just for you 🌸</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:wght@300&display=swap" rel="stylesheet">
-
-<style>
-:root{
-  --rose:#d4708a;
-  --bg:#fffaf8;
-}
-
-body{
-  margin:0;
-  font-family:'DM Sans',sans-serif;
-  background:var(--bg);
-  color:#2a1a22;
-}
-
-/* background */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 20% 20%, #fdeef3, transparent),
-    radial-gradient(circle at 80% 80%, #fde8d6, transparent),
-    radial-gradient(circle at 50% 50%, #f0e8fd, transparent);
-  z-index:-1;
-}
-
-/* layout */
-.screen{
-  display:none;
-  min-height:100vh;
-  padding:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.screen.active{display:flex}
-
-/* card */
-.card{
-  width:100%;
-  max-width:500px;
-  background:rgba(255,255,255,0.75);
-  backdrop-filter:blur(16px);
-  border-radius:22px;
-  padding:28px 20px;
-  text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-}
-
-/* text */
-h1,h2{
-  font-family:'Cormorant Garamond',serif;
-  font-weight:300;
-}
-
-p{
-  font-size:14px;
-  color:#8a5a6a;
-}
-
-/* input */
-textarea{
-  width:100%;
-  min-height:120px;
-  border-radius:12px;
-  border:none;
-  padding:12px;
-  margin-top:10px;
-  background:rgba(255,255,255,0.85);
-  font-style:italic;
-}
-
-/* button */
-button{
-  margin-top:20px;
-  padding:12px;
-  width:100%;
-  border:none;
-  border-radius:25px;
-  background:linear-gradient(135deg,#f0a0b8,#d4708a);
-  color:white;
-}
-
-/* notice */
-.notice{
-  font-size:13px;
-  color:var(--rose);
-  margin-top:6px;
-}
-</style>
-
-</head>
-
-<body>
-
-<!-- SCREEN 0 -->
-
-<div class="screen active" id="s0">
-  <div class="card">
-    <h1 id="title"></h1>
-    <p id="time"></p>
-    <button id="startBtn">I'm ready</button>
-  </div>
-</div>
-
-<!-- SCREEN 1 -->
-
-<div class="screen" id="s1">
-  <div class="card">
-    <h2>What's on your mind?</h2>
-    <textarea id="t1"></textarea>
-    <div class="notice" id="notice1"></div>
-    <button id="send1Btn">Send 💌</button>
-  </div>
-</div>
-
-<!-- SCREEN 2 -->
-
-<div class="screen" id="s2">
-  <div class="card">
-    <h2 id="resp1"></h2>
-  </div>
-</div>
-
-<!-- SCREEN 3 -->
-
-<div class="screen" id="s3">
-  <div class="card">
-    <h2>Tell me something you don’t usually say</h2>
-    <textarea id="t2"></textarea>
-    <button id="send2Btn">Send 🌷</button>
-  </div>
-</div>
-
-<!-- SCREEN 4 -->
-
-<div class="screen" id="s4">
-  <div class="card">
-    <h2 id="final"></h2>
-  </div>
-</div>
-
 <script>
+document.addEventListener("DOMContentLoaded", () => {
 
-/* safe DOM references */
 const title = document.getElementById("title");
 const time = document.getElementById("time");
 const startBtn = document.getElementById("startBtn");
@@ -173,7 +22,7 @@ function go(n){
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* typing effect */
+/* typing */
 function type(el,text){
   el.innerHTML="";
   let i=0;
@@ -198,7 +47,7 @@ type(title,g);
 time.innerText =
 "You opened this at "+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
-/* start button */
+/* FIXED BUTTON */
 startBtn.addEventListener("click",()=>{
   go(1);
 });
@@ -253,7 +102,5 @@ send2Btn.addEventListener("click",()=>{
   type(final,r+" 🌸");
 });
 
+});
 </script>
-
-</body>
-</html>
