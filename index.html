@@ -14,31 +14,6 @@ body {
   color:#2a1a22;
 }
 
-/* ambient glow */
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background: radial-gradient(circle, rgba(212,112,138,0.15), transparent 70%);
-  animation:pulse 6s infinite;
-}
-@keyframes pulse{
-  0%,100%{opacity:0.2;}
-  50%{opacity:0.5;}
-}
-
-/* particles */
-.p{
-  position:absolute;
-  font-size:12px;
-  opacity:0.5;
-  animation:float 10s linear infinite;
-}
-@keyframes float{
-  from{transform:translateY(100vh);}
-  to{transform:translateY(-10vh);}
-}
-
 /* screens */
 .screen{display:none;height:100vh;justify-content:center;align-items:center;padding:20px;}
 .screen.active{display:flex;animation:fade .8s ease;}
@@ -46,13 +21,12 @@ body::after{
 
 /* card */
 .card{
-  background:rgba(255,255,255,0.65);
+  background:rgba(255,255,255,0.7);
   backdrop-filter:blur(20px);
   padding:40px;
   border-radius:30px;
   max-width:520px;
   text-align:center;
-  box-shadow:0 10px 60px rgba(0,0,0,0.08);
 }
 
 /* typography */
@@ -66,8 +40,7 @@ textarea{
   border-radius:15px;
   padding:15px;
   margin-top:10px;
-  background:rgba(255,255,255,0.7);
-  font-style:italic;
+  background:rgba(255,255,255,0.8);
 }
 
 /* button */
@@ -78,36 +51,28 @@ button{
   border-radius:30px;
   background:linear-gradient(135deg,#f0a0b8,#b8506e);
   color:white;
+  font-size:16px;
 }
 
-/* subtle text */
+/* notice */
 .notice{
   font-size:13px;
   color:#b8506e;
   margin-top:10px;
   min-height:18px;
 }
-</style></head><body><!-- particles --><script>
-for(let i=0;i<30;i++){
-  let e=document.createElement("div");
-  e.className="p";
-  e.innerText="✦";
-  e.style.left=Math.random()*100+"%";
-  e.style.animationDuration=(6+Math.random()*8)+"s";
-  document.body.appendChild(e);
-}
-</script><!-- SCREEN 0 --><div class="screen active" id="s0">
+</style></head><body><!-- SCREEN 0 --><div class="screen active" id="s0">
   <div class="card">
     <h1 id="title"></h1>
     <p id="time"></p>
-    <button onclick="go(1)">I'm ready →</button>
+    <button id="startBtn">I'm ready →</button>
   </div>
 </div><!-- SCREEN 1 --><div class="screen" id="s1">
   <div class="card">
     <h2>What's on your mind?</h2>
     <textarea id="t1"></textarea>
     <div class="notice" id="notice1"></div>
-    <button onclick="send1()">Send 💌</button>
+    <button id="send1Btn">Send 💌</button>
   </div>
 </div><!-- SCREEN 2 --><div class="screen" id="s2">
   <div class="card">
@@ -117,7 +82,7 @@ for(let i=0;i<30;i++){
   <div class="card">
     <h2>Tell me something you don’t usually say</h2>
     <textarea id="t2"></textarea>
-    <button onclick="send2()">Send 🌷</button>
+    <button id="send2Btn">Send 🌷</button>
   </div>
 </div><!-- SCREEN 4 --><div class="screen" id="s4">
   <div class="card">
@@ -125,13 +90,16 @@ for(let i=0;i<30;i++){
   </div>
 </div><script>
 
-/* NAV */
+/* SAFE START */
+window.addEventListener("load", () => {
+
+/* NAVIGATION */
 function go(n){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* TYPE */
+/* TYPE EFFECT */
 function type(el,text){
   el.innerHTML="";
   let i=0;
@@ -156,108 +124,64 @@ type(document.getElementById("title"),g);
 document.getElementById("time").innerText =
 "You opened this at "+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
-/* PROFILE */
-let profile = JSON.parse(localStorage.getItem("profile")||"{}");
+/* FIXED BUTTON (IMPORTANT) */
+document.getElementById("startBtn").addEventListener("click",()=>{
+  type(document.getElementById("title"),"Wait… don’t rush.");
+  setTimeout(()=>go(1),800);
+});
 
+/* TRACKING */
 let startTime;
 let typingStarted=false;
-let lastType=Date.now();
 
-/* INPUT TRACK */
+/* INPUT */
 document.getElementById("t1").addEventListener("input",()=>{
   if(!typingStarted){
     typingStarted=true;
     startTime=Date.now();
   }
-  lastType=Date.now();
 
   let len=t1.value.length;
   let n=document.getElementById("notice1");
 
   if(len===1) n.innerText="you started…";
   if(len===50) n.innerText="you're thinking carefully…";
-  if(len===120) n.innerText="this feels honest.";
 });
 
-/* PAUSE DETECTION */
-setInterval(()=>{
-  let gap=(Date.now()-lastType)/1000;
-  if(gap>5 && gap<8){
-    notice1.innerText="you paused… why?";
-  }
-  if(gap>10){
-    notice1.innerText="you don’t have to hide it here.";
-  }
-},2000);
-
-/* SEND1 */
-function send1(){
+/* SEND 1 */
+document.getElementById("send1Btn").addEventListener("click",()=>{
   let txt=t1.value.trim();
   if(!txt){alert("write something");return;}
 
   let duration=Math.floor((Date.now()-startTime)/1000);
 
-  /* PROFILE BUILD */
-  profile.speed = duration<5?"fast":duration>15?"slow":"normal";
-  profile.depth = txt.length<30?"shallow":txt.length>120?"deep":"medium";
-
-  localStorage.setItem("profile",JSON.stringify(profile));
-  localStorage.setItem("memory",txt);
-
   go(2);
 
-  let r;
-
-  if(profile.depth==="deep"){
-    r="You don’t usually say things like that… do you?";
-  } else if(profile.speed==="fast"){
-    r="You didn’t think much before writing that… interesting.";
-  } else if(profile.depth==="shallow"){
-    r="You’re holding something back… I can feel it.";
-  } else {
-    r="There’s something in that… I noticed.";
-  }
+  let r = duration>10
+    ? "You took your time… that means something."
+    : txt.length<20
+    ? "Short… but honest."
+    : "There’s something real in that.";
 
   type(resp1,r);
 
   setTimeout(()=>go(3),2500);
-}
+});
 
-/* SEND2 */
-function send2(){
+/* SEND 2 */
+document.getElementById("send2Btn").addEventListener("click",()=>{
   let txt=t2.value.trim();
   if(!txt){alert("say something");return;}
 
   go(4);
 
-  let r =
-    txt.length>60
-    ? "You don’t let people see that side often… do you?"
+  let r = txt.length>60
+    ? "You don’t say things like that often… do you?"
     : "Even that small thing… meant more than you think.";
 
   type(final,r+" 🌸");
-}
-
-/* RETURN DETECTION */
-document.addEventListener("visibilitychange",()=>{
-  if(!document.hidden){
-    setTimeout(()=>{
-      notice1.innerText="You came back… I was still here.";
-    },800);
-  }
 });
 
-/* MEMORY EVOLUTION */
-if(profile.depth==="deep"){
-  setTimeout(()=>{
-    time.innerText="Last time… you said something that stayed with me.";
-  },2000);
-}
-if(profile.speed==="fast"){
-  setTimeout(()=>{
-    time.innerText="You act quickly… I remember that about you.";
-  },2000);
-}
-
+});
 </script></body>
 </html>
