@@ -4,129 +4,103 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>something just for you 🌸</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=DM+Sans:wght@300&display=swap" rel="stylesheet"><style>
 body {
-  margin: 0;
-  font-family: 'DM Sans', sans-serif;
-  color: #2a1a22;
-  height: 100vh;
-  overflow: hidden;
-
-  /* 🎨 Cinematic gradient */
+  margin:0;
+  font-family:'DM Sans',sans-serif;
   background: radial-gradient(circle at 20% 20%, #fdeef3, transparent),
               radial-gradient(circle at 80% 80%, #fde8d6, transparent),
-              radial-gradient(circle at 50% 50%, #f0e8fd, transparent),
               #fffaf8;
+  overflow:hidden;
 }
 
-/* floating particles */
-.particle {
-  position: absolute;
-  font-size: 14px;
-  animation: float 10s linear infinite;
-  opacity: 0.6;
+/* glow background pulse */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background: radial-gradient(circle, rgba(212,112,138,0.15), transparent 70%);
+  animation:pulse 6s infinite;
 }
-@keyframes float {
-  from { transform: translateY(100vh); }
-  to { transform: translateY(-10vh); }
+@keyframes pulse{
+  0%,100%{opacity:0.2;}
+  50%{opacity:0.5;}
 }
 
-/* screens */
-.screen {
-  display: none;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
+/* screen */
+.screen{
+  display:none;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
 }
-.screen.active {
-  display: flex;
-  animation: fade 0.8s ease;
-}
-@keyframes fade {
-  from {opacity:0; transform: translateY(20px);}
-  to {opacity:1;}
-}
+.screen.active{display:flex}
 
 /* card */
-.card {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(20px);
-  padding: 40px;
-  border-radius: 30px;
-  max-width: 500px;
-  box-shadow: 0 10px 50px rgba(0,0,0,0.08);
+.card{
+  background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(20px);
+  padding:40px;
+  border-radius:30px;
+  text-align:center;
+  max-width:500px;
 }
 
-/* headings */
-h1, h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-}
-
-/* button */
-button {
-  padding: 12px 28px;
-  border-radius: 40px;
-  border: none;
-  background: linear-gradient(135deg,#f0a0b8,#d4708a,#b8506e);
-  color: white;
-  font-size: 16px;
-  margin-top: 20px;
-  cursor: pointer;
+/* text */
+h1,h2{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
 }
 
 /* textarea */
-textarea {
-  width: 100%;
-  height: 120px;
-  border-radius: 15px;
-  border: none;
-  padding: 15px;
-  margin-top: 15px;
-  background: rgba(255,255,255,0.7);
-  font-style: italic;
+textarea{
+  width:100%;
+  height:120px;
+  border:none;
+  border-radius:15px;
+  padding:15px;
+  margin-top:10px;
 }
 
-/* typing cursor */
-.cursor {
-  display:inline-block;
-  width:2px;
-  background:#d4708a;
-  animation:blink 1s infinite;
+/* button */
+button{
+  margin-top:20px;
+  padding:12px 28px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#f0a0b8,#b8506e);
+  color:white;
 }
-@keyframes blink {50%{opacity:0}}
-</style></head><body><!-- particles --><script>
-for(let i=0;i<25;i++){
-  let p=document.createElement("div");
-  p.className="particle";
-  p.innerText="✦";
-  p.style.left=Math.random()*100+"%";
-  p.style.animationDuration=(6+Math.random()*10)+"s";
-  document.body.appendChild(p);
+
+/* subtle message */
+.notice{
+  font-size:13px;
+  color:#b8506e;
+  margin-top:10px;
+  opacity:0.7;
 }
-</script><!-- SCREEN 0 --><div class="screen active" id="s0">
+</style></head><body><div class="screen active" id="s0">
   <div class="card">
     <h1 id="title"></h1>
-    <p id="timeText"></p>
+    <p id="time"></p>
     <button onclick="go(1)">I'm ready →</button>
   </div>
-</div><!-- SCREEN 1 --><div class="screen" id="s1">
+</div><div class="screen" id="s1">
   <div class="card">
     <h2>What's on your mind?</h2>
-    <textarea id="msg1" placeholder="write honestly..."></textarea>
+    <textarea id="t1"></textarea>
+    <div class="notice" id="notice1"></div>
     <button onclick="send1()">Send 💌</button>
   </div>
-</div><!-- SCREEN 2 --><div class="screen" id="s2">
+</div><div class="screen" id="s2">
   <div class="card">
     <h2 id="resp1"></h2>
   </div>
-</div><!-- SCREEN 3 --><div class="screen" id="s3">
+</div><div class="screen" id="s3">
   <div class="card">
-    <h2>Tell me something you wouldn’t normally say</h2>
-    <textarea id="msg2"></textarea>
+    <h2>Tell me something you don’t usually say</h2>
+    <textarea id="t2"></textarea>
     <button onclick="send2()">Send 🌷</button>
   </div>
-</div><!-- SCREEN 4 --><div class="screen" id="s4">
+</div><div class="screen" id="s4">
   <div class="card">
     <h2 id="final"></h2>
   </div>
@@ -138,70 +112,107 @@ function go(n){
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* typing */
-function type(el, text){
+/* typing effect */
+function type(el,text){
   el.innerHTML="";
   let i=0;
   function t(){
     if(i<text.length){
-      el.innerHTML+=text[i];
-      i++;
-      setTimeout(t,30+Math.random()*30);
+      el.innerHTML+=text[i++];
+      setTimeout(t,25+Math.random()*30);
     }
   }
   t();
 }
 
-/* time personalization */
-let h=new Date().getHours();
-let greet = h<6 ? "You're still awake… I made this for you 💌"
-         : h<12 ? "Good morning… just for you 🌸"
-         : h<18 ? "A quiet moment… just for you ✨"
-         : "Tonight feels different… I made this for you 🌙";
+/* time awareness */
+let now=new Date();
+type(title = document.getElementById("title"),
+  "I wasn't sure if you'd come… but you did.");
 
-type(document.getElementById("title"),greet);
+document.getElementById("time").innerText =
+"You opened this at "+now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
-document.getElementById("timeText").innerText =
-"You opened this at "+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+/* behavioral tracking */
+let startTime;
+let typingStarted=false;
 
-/* first message */
+document.getElementById("t1").addEventListener("input",()=>{
+  if(!typingStarted){
+    typingStarted=true;
+    startTime=Date.now();
+  }
+
+  let len=document.getElementById("t1").value.length;
+  let notice=document.getElementById("notice1");
+
+  if(len===1) notice.innerText="you started…";
+  if(len===40) notice.innerText="you're thinking carefully…";
+  if(len===120) notice.innerText="this feels real.";
+});
+
+/* pause detection */
+let pauseTimer;
+document.getElementById("t1").addEventListener("input",()=>{
+  clearTimeout(pauseTimer);
+  pauseTimer=setTimeout(()=>{
+    document.getElementById("notice1").innerText="you paused… I noticed that.";
+  },3000);
+});
+
+/* send1 */
 function send1(){
-  let txt=document.getElementById("msg1").value.trim();
-  if(!txt){alert("write something 💌");return;}
+  let txt=document.getElementById("t1").value.trim();
+  if(!txt){alert("write something");return;}
 
+  let duration=Math.floor((Date.now()-startTime)/1000);
   localStorage.setItem("memory",txt);
 
   go(2);
 
-  let r = txt.length<20 ? "Short… but honest."
-        : txt.length>120 ? "You shared something deep. I felt it."
-        : "There’s something real in your words.";
+  let response;
 
-  type(document.getElementById("resp1"),r);
+  if(duration>10){
+    response="You took your time… that usually means it's important.";
+  } else if(txt.length<20){
+    response="Short… like you were holding back.";
+  } else {
+    response="There’s something in that… I felt it.";
+  }
+
+  type(document.getElementById("resp1"),response);
 
   setTimeout(()=>go(3),2500);
 }
 
-/* second message */
+/* send2 */
 function send2(){
-  let txt=document.getElementById("msg2").value.trim();
-  if(!txt){alert("say something 🌷");return;}
+  let txt=document.getElementById("t2").value.trim();
+  if(!txt){alert("say something");return;}
 
   go(4);
 
-  let r = txt.length>60
-    ? "Not everyone opens up like that… I’m glad you did."
-    : "That meant something, even if you don’t realise it.";
+  let response =
+    txt.length>60
+    ? "You don’t say things like that often… do you?"
+    : "Even that small thing… meant more than you think.";
 
-  type(document.getElementById("final"),r+" 🌸");
+  type(document.getElementById("final"),response+" 🌸");
 }
+
+/* return detection */
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden){
+    alert("You came back… I was still here.");
+  }
+});
 
 /* memory illusion */
 let mem=localStorage.getItem("memory");
 if(mem){
   setTimeout(()=>{
-    document.getElementById("timeText").innerText =
-    "You were here before… I remember something you wrote.";
+    document.getElementById("time").innerText =
+    "You’ve been here before… I remember something about you.";
   },2000);
 }
 
