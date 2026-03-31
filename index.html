@@ -1,8 +1,14 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>something just for you 🌸</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:wght@300&display=swap" rel="stylesheet"><style>
+<title>something just for you 🌸</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:wght@300&display=swap" rel="stylesheet">
+
+<style>
 :root{
   --rose:#d4708a;
   --bg:#fffaf8;
@@ -15,7 +21,7 @@ body{
   color:#2a1a22;
 }
 
-/* soft gradient background */
+/* background */
 body::before{
   content:"";
   position:fixed;
@@ -31,7 +37,7 @@ body::before{
 .screen{
   display:none;
   min-height:100vh;
-  padding:30px 20px;
+  padding:20px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -42,94 +48,124 @@ body::before{
 .card{
   width:100%;
   max-width:500px;
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(20px);
-  border-radius:24px;
-  padding:30px 25px;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(16px);
+  border-radius:22px;
+  padding:28px 20px;
   text-align:center;
-  box-shadow:0 10px 40px rgba(0,0,0,0.08);
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
-/* typography */
+/* text */
 h1,h2{
   font-family:'Cormorant Garamond',serif;
   font-weight:300;
-  margin-bottom:10px;
 }
+
 p{
   font-size:14px;
   color:#8a5a6a;
 }
 
-/* button */
-button{
-  margin-top:20px;
-  padding:12px 28px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(135deg,#f0a0b8,#d4708a);
-  color:white;
-  font-size:15px;
-  width:100%;
-}
-
-/* textarea */
+/* input */
 textarea{
   width:100%;
   min-height:120px;
-  border-radius:14px;
+  border-radius:12px;
   border:none;
-  padding:14px;
+  padding:12px;
   margin-top:10px;
-  background:rgba(255,255,255,0.8);
+  background:rgba(255,255,255,0.85);
   font-style:italic;
-  font-size:14px;
 }
 
-/* subtle text */
+/* button */
+button{
+  margin-top:20px;
+  padding:12px;
+  width:100%;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(135deg,#f0a0b8,#d4708a);
+  color:white;
+}
+
+/* notice */
 .notice{
   font-size:13px;
   color:var(--rose);
-  margin-top:8px;
-  min-height:18px;
+  margin-top:6px;
 }
+</style>
 
-/* fade */
-.fade{
-  animation:fade .6s ease;
-}
-@keyframes fade{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1}
-}
-</style></head><body><!-- SCREEN 0 --><div class="screen active" id="s0">
-  <div class="card fade">
+</head>
+
+<body>
+
+<!-- SCREEN 0 -->
+
+<div class="screen active" id="s0">
+  <div class="card">
     <h1 id="title"></h1>
     <p id="time"></p>
     <button id="startBtn">I'm ready</button>
   </div>
-</div><!-- SCREEN 1 --><div class="screen" id="s1">
-  <div class="card fade">
+</div>
+
+<!-- SCREEN 1 -->
+
+<div class="screen" id="s1">
+  <div class="card">
     <h2>What's on your mind?</h2>
-    <textarea id="t1" placeholder="write freely..."></textarea>
+    <textarea id="t1"></textarea>
     <div class="notice" id="notice1"></div>
     <button id="send1Btn">Send 💌</button>
   </div>
-</div><!-- SCREEN 2 --><div class="screen" id="s2">
-  <div class="card fade">
+</div>
+
+<!-- SCREEN 2 -->
+
+<div class="screen" id="s2">
+  <div class="card">
     <h2 id="resp1"></h2>
   </div>
-</div><!-- SCREEN 3 --><div class="screen" id="s3">
-  <div class="card fade">
+</div>
+
+<!-- SCREEN 3 -->
+
+<div class="screen" id="s3">
+  <div class="card">
     <h2>Tell me something you don’t usually say</h2>
     <textarea id="t2"></textarea>
     <button id="send2Btn">Send 🌷</button>
   </div>
-</div><!-- SCREEN 4 --><div class="screen" id="s4">
-  <div class="card fade">
+</div>
+
+<!-- SCREEN 4 -->
+
+<div class="screen" id="s4">
+  <div class="card">
     <h2 id="final"></h2>
   </div>
-</div><script>
+</div>
+
+<script>
+
+/* safe DOM references */
+const title = document.getElementById("title");
+const time = document.getElementById("time");
+const startBtn = document.getElementById("startBtn");
+
+const t1 = document.getElementById("t1");
+const notice1 = document.getElementById("notice1");
+const send1Btn = document.getElementById("send1Btn");
+
+const resp1 = document.getElementById("resp1");
+
+const t2 = document.getElementById("t2");
+const send2Btn = document.getElementById("send2Btn");
+
+const final = document.getElementById("final");
 
 /* navigation */
 function go(n){
@@ -137,7 +173,7 @@ function go(n){
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* typing */
+/* typing effect */
 function type(el,text){
   el.innerHTML="";
   let i=0;
@@ -157,17 +193,17 @@ let g = h<6?"You're still awake… I was waiting."
       :h<18?"You chose this moment… interesting."
       :"Tonight feels quieter… now you're here.";
 
-type(title=document.getElementById("title"),g);
+type(title,g);
 
 time.innerText =
 "You opened this at "+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
 /* start button */
-document.getElementById("startBtn").addEventListener("click",()=>{
+startBtn.addEventListener("click",()=>{
   go(1);
 });
 
-/* input behavior */
+/* typing tracking */
 let startTime;
 let typing=false;
 
@@ -217,5 +253,7 @@ send2Btn.addEventListener("click",()=>{
   type(final,r+" 🌸");
 });
 
-</script></body>
+</script>
+
+</body>
 </html>
