@@ -8,11 +8,13 @@ body {
   font-family:'DM Sans',sans-serif;
   background: radial-gradient(circle at 20% 20%, #fdeef3, transparent),
               radial-gradient(circle at 80% 80%, #fde8d6, transparent),
+              radial-gradient(circle at 50% 50%, #f0e8fd, transparent),
               #fffaf8;
   overflow:hidden;
+  color:#2a1a22;
 }
 
-/* glow background pulse */
+/* ambient glow */
 body::after{
   content:"";
   position:fixed;
@@ -25,14 +27,22 @@ body::after{
   50%{opacity:0.5;}
 }
 
-/* screen */
-.screen{
-  display:none;
-  height:100vh;
-  justify-content:center;
-  align-items:center;
+/* particles */
+.p{
+  position:absolute;
+  font-size:12px;
+  opacity:0.5;
+  animation:float 10s linear infinite;
 }
-.screen.active{display:flex}
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+
+/* screens */
+.screen{display:none;height:100vh;justify-content:center;align-items:center;padding:20px;}
+.screen.active{display:flex;animation:fade .8s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
 
 /* card */
 .card{
@@ -40,15 +50,13 @@ body::after{
   backdrop-filter:blur(20px);
   padding:40px;
   border-radius:30px;
+  max-width:520px;
   text-align:center;
-  max-width:500px;
+  box-shadow:0 10px 60px rgba(0,0,0,0.08);
 }
 
-/* text */
-h1,h2{
-  font-family:'Cormorant Garamond',serif;
-  font-weight:300;
-}
+/* typography */
+h1,h2{font-family:'Cormorant Garamond',serif;font-weight:300}
 
 /* textarea */
 textarea{
@@ -58,6 +66,8 @@ textarea{
   border-radius:15px;
   padding:15px;
   margin-top:10px;
+  background:rgba(255,255,255,0.7);
+  font-style:italic;
 }
 
 /* button */
@@ -70,49 +80,58 @@ button{
   color:white;
 }
 
-/* subtle message */
+/* subtle text */
 .notice{
   font-size:13px;
   color:#b8506e;
   margin-top:10px;
-  opacity:0.7;
+  min-height:18px;
 }
-</style></head><body><div class="screen active" id="s0">
+</style></head><body><!-- particles --><script>
+for(let i=0;i<30;i++){
+  let e=document.createElement("div");
+  e.className="p";
+  e.innerText="✦";
+  e.style.left=Math.random()*100+"%";
+  e.style.animationDuration=(6+Math.random()*8)+"s";
+  document.body.appendChild(e);
+}
+</script><!-- SCREEN 0 --><div class="screen active" id="s0">
   <div class="card">
     <h1 id="title"></h1>
     <p id="time"></p>
     <button onclick="go(1)">I'm ready →</button>
   </div>
-</div><div class="screen" id="s1">
+</div><!-- SCREEN 1 --><div class="screen" id="s1">
   <div class="card">
     <h2>What's on your mind?</h2>
     <textarea id="t1"></textarea>
     <div class="notice" id="notice1"></div>
     <button onclick="send1()">Send 💌</button>
   </div>
-</div><div class="screen" id="s2">
+</div><!-- SCREEN 2 --><div class="screen" id="s2">
   <div class="card">
     <h2 id="resp1"></h2>
   </div>
-</div><div class="screen" id="s3">
+</div><!-- SCREEN 3 --><div class="screen" id="s3">
   <div class="card">
     <h2>Tell me something you don’t usually say</h2>
     <textarea id="t2"></textarea>
     <button onclick="send2()">Send 🌷</button>
   </div>
-</div><div class="screen" id="s4">
+</div><!-- SCREEN 4 --><div class="screen" id="s4">
   <div class="card">
     <h2 id="final"></h2>
   </div>
 </div><script>
 
-/* navigation */
+/* NAV */
 function go(n){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* typing effect */
+/* TYPE */
 function type(el,text){
   el.innerHTML="";
   let i=0;
@@ -125,94 +144,118 @@ function type(el,text){
   t();
 }
 
-/* time awareness */
-let now=new Date();
-type(title = document.getElementById("title"),
-  "I wasn't sure if you'd come… but you did.");
+/* GREETING */
+let h=new Date().getHours();
+let g = h<6?"You're still awake… I was waiting."
+      :h<12?"Good morning… I hoped you'd come."
+      :h<18?"You chose this moment… interesting."
+      :"Tonight feels quieter… now you're here.";
+
+type(document.getElementById("title"),g);
 
 document.getElementById("time").innerText =
-"You opened this at "+now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+"You opened this at "+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 
-/* behavioral tracking */
+/* PROFILE */
+let profile = JSON.parse(localStorage.getItem("profile")||"{}");
+
 let startTime;
 let typingStarted=false;
+let lastType=Date.now();
 
+/* INPUT TRACK */
 document.getElementById("t1").addEventListener("input",()=>{
   if(!typingStarted){
     typingStarted=true;
     startTime=Date.now();
   }
+  lastType=Date.now();
 
-  let len=document.getElementById("t1").value.length;
-  let notice=document.getElementById("notice1");
+  let len=t1.value.length;
+  let n=document.getElementById("notice1");
 
-  if(len===1) notice.innerText="you started…";
-  if(len===40) notice.innerText="you're thinking carefully…";
-  if(len===120) notice.innerText="this feels real.";
+  if(len===1) n.innerText="you started…";
+  if(len===50) n.innerText="you're thinking carefully…";
+  if(len===120) n.innerText="this feels honest.";
 });
 
-/* pause detection */
-let pauseTimer;
-document.getElementById("t1").addEventListener("input",()=>{
-  clearTimeout(pauseTimer);
-  pauseTimer=setTimeout(()=>{
-    document.getElementById("notice1").innerText="you paused… I noticed that.";
-  },3000);
-});
+/* PAUSE DETECTION */
+setInterval(()=>{
+  let gap=(Date.now()-lastType)/1000;
+  if(gap>5 && gap<8){
+    notice1.innerText="you paused… why?";
+  }
+  if(gap>10){
+    notice1.innerText="you don’t have to hide it here.";
+  }
+},2000);
 
-/* send1 */
+/* SEND1 */
 function send1(){
-  let txt=document.getElementById("t1").value.trim();
+  let txt=t1.value.trim();
   if(!txt){alert("write something");return;}
 
   let duration=Math.floor((Date.now()-startTime)/1000);
+
+  /* PROFILE BUILD */
+  profile.speed = duration<5?"fast":duration>15?"slow":"normal";
+  profile.depth = txt.length<30?"shallow":txt.length>120?"deep":"medium";
+
+  localStorage.setItem("profile",JSON.stringify(profile));
   localStorage.setItem("memory",txt);
 
   go(2);
 
-  let response;
+  let r;
 
-  if(duration>10){
-    response="You took your time… that usually means it's important.";
-  } else if(txt.length<20){
-    response="Short… like you were holding back.";
+  if(profile.depth==="deep"){
+    r="You don’t usually say things like that… do you?";
+  } else if(profile.speed==="fast"){
+    r="You didn’t think much before writing that… interesting.";
+  } else if(profile.depth==="shallow"){
+    r="You’re holding something back… I can feel it.";
   } else {
-    response="There’s something in that… I felt it.";
+    r="There’s something in that… I noticed.";
   }
 
-  type(document.getElementById("resp1"),response);
+  type(resp1,r);
 
   setTimeout(()=>go(3),2500);
 }
 
-/* send2 */
+/* SEND2 */
 function send2(){
-  let txt=document.getElementById("t2").value.trim();
+  let txt=t2.value.trim();
   if(!txt){alert("say something");return;}
 
   go(4);
 
-  let response =
+  let r =
     txt.length>60
-    ? "You don’t say things like that often… do you?"
+    ? "You don’t let people see that side often… do you?"
     : "Even that small thing… meant more than you think.";
 
-  type(document.getElementById("final"),response+" 🌸");
+  type(final,r+" 🌸");
 }
 
-/* return detection */
+/* RETURN DETECTION */
 document.addEventListener("visibilitychange",()=>{
   if(!document.hidden){
-    alert("You came back… I was still here.");
+    setTimeout(()=>{
+      notice1.innerText="You came back… I was still here.";
+    },800);
   }
 });
 
-/* memory illusion */
-let mem=localStorage.getItem("memory");
-if(mem){
+/* MEMORY EVOLUTION */
+if(profile.depth==="deep"){
   setTimeout(()=>{
-    document.getElementById("time").innerText =
-    "You’ve been here before… I remember something about you.";
+    time.innerText="Last time… you said something that stayed with me.";
+  },2000);
+}
+if(profile.speed==="fast"){
+  setTimeout(()=>{
+    time.innerText="You act quickly… I remember that about you.";
   },2000);
 }
 
